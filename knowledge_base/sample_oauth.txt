@@ -1,0 +1,13 @@
+OAuth 2.0 Security and Token Management Specification
+
+Section 1: Authorization Code Flow with PKCE
+The Authorization Code flow with Proof Key for Code Exchange (PKCE) is mandatory for all public, single-page, and mobile applications. The client must generate a cryptographically random code_verifier with at least 43 characters of entropy and compute a SHA-256 code_challenge.
+
+Section 2: Token Lifecycles and Expiration Policy
+Access tokens are short-lived bearer tokens with an expiration window of exactly 15 minutes (900 seconds). They must be encoded as signed JSON Web Tokens (JWT) using RS256 or Ed25519 algorithms.
+
+Refresh tokens are long-lived credentials valid for 30 days. However, every time a refresh token is exchanged for a new access token, Refresh Token Rotation must be enforced: the old refresh token is immediately invalidated, and a new refresh token is issued. If an already-used refresh token is presented, all descendant tokens associated with that authorization grant are instantly revoked due to suspected token compromise.
+
+Section 3: Scope Enforcement and Claims
+Every access token must include the 'sub' claim identifying the principal user, the 'iss' claim validating the authorization server authority, and the 'aud' claim restricting target service consumption. Resource servers must validate all three claims on every inbound HTTP request.
+
