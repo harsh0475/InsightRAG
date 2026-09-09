@@ -7,6 +7,12 @@ from backend.app.schemas.document import (
     ParsedSection,
     SourceType,
 )
+from backend.app.schemas.retrieval import (
+    IndexChunksRequest,
+    IndexChunksResponse,
+    VectorSearchRequest,
+    VectorSearchResult,
+)
 
 __all__ = [
     "ChunkMetadata",
@@ -15,5 +21,8 @@ __all__ = [
     "IngestionResult",
     "ParsedSection",
     "SourceType",
+    "IndexChunksRequest",
+    "IndexChunksResponse",
+    "VectorSearchRequest",
+    "VectorSearchResult",
 ]
-
