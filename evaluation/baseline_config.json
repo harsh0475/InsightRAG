@@ -1,0 +1,32 @@
+{
+  "experiment_name": "Experiment A - Baseline RAG (Vector Only)",
+  "version": "1.0.0",
+  "created_at": "2026-09-10",
+  "description": "Baseline naive RAG configuration using dense semantic search without reranker or hybrid fusion, evaluating grounding, refusal, and citations.",
+  "pipeline_parameters": {
+    "retrieval_strategy": "vector_only",
+    "top_k": 5,
+    "similarity_metric": "cosine",
+    "dense_embedding_model": "text-embedding-3-small",
+    "embedding_dimension": 1536,
+    "max_context_tokens": 2500,
+    "chunk_size": 500,
+    "chunk_overlap": 50
+  },
+  "generation_parameters": {
+    "llm_provider": "openai",
+    "llm_model": "gpt-4o-mini",
+    "temperature": 0.0,
+    "max_tokens": 1024,
+    "system_prompt_version": "v1_strict_grounding",
+    "citation_format": "[chunk_id]",
+    "refusal_behavior": "exact_phrase_on_insufficient_evidence"
+  },
+  "target_metrics": {
+    "expected_hit_rate": 0.85,
+    "expected_mrr": 0.70,
+    "expected_faithfulness": 0.95,
+    "expected_answer_relevance": 0.80
+  }
+}
+

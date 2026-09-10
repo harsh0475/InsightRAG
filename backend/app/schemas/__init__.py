@@ -7,6 +7,7 @@ from backend.app.schemas.document import (
     ParsedSection,
     SourceType,
 )
+from backend.app.schemas.rag import Citation, RAGQueryRequest, RAGResponse
 from backend.app.schemas.retrieval import (
     IndexChunksRequest,
     IndexChunksResponse,
@@ -25,4 +26,7 @@ __all__ = [
     "IndexChunksResponse",
     "VectorSearchRequest",
     "VectorSearchResult",
+    "Citation",
+    "RAGQueryRequest",
+    "RAGResponse",
 ]
