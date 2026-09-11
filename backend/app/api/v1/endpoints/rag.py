@@ -24,6 +24,7 @@ async def query_rag(payload: RAGQueryRequest) -> RAGResponse:
         response = pipeline.run(
             query=payload.query,
             top_k=payload.top_k,
+            retrieval_mode=payload.retrieval_mode,
             document_ids=payload.document_ids,
         )
         return response

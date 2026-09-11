@@ -72,7 +72,10 @@ class Settings(BaseSettings):
     DEFAULT_CHUNK_OVERLAP: int = Field(default=50, ge=0, description="Overlap between consecutive chunks")
 
     # Retrieval & Reranker Configuration
+    RETRIEVAL_MODE: str = Field(default="hybrid", description="Default retrieval mode: vector, bm25, hybrid")
     DEFAULT_TOP_K: int = Field(default=5, gt=0, description="Default number of chunks returned for generation")
+    BM25_K1: float = Field(default=1.5, ge=0.0, description="BM25 term frequency saturation parameter")
+    BM25_B: float = Field(default=0.75, ge=0.0, le=1.0, description="BM25 document length normalization parameter")
     HYBRID_RETRIEVAL_ALPHA: float = Field(default=0.5, ge=0.0, le=1.0, description="Weight between vector (alpha) and BM25 (1-alpha)")
     RRF_K: int = Field(default=60, gt=0, description="Reciprocal Rank Fusion smoothing parameter")
     RERANKER_PROVIDER: str = Field(default="cross-encoder", description="Reranker provider: cross-encoder, cohere, none")

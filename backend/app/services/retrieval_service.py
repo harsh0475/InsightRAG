@@ -35,6 +35,14 @@ class RetrievalService:
 
         logger.info(f"Indexing {len(chunks)} vectors into vector store")
         indexed_count = self.vector_store.index_chunks(chunks, embeddings)
+
+        # Also synchronize BM25 index for sparse and hybrid search
+        try:
+            from backend.app.services.retrieval.bm25 import get_bm25_retriever
+            get_bm25_retriever().index_chunks(chunks)
+        except Exception as e:
+            logger.warning(f"Could not index into BM25 retriever: {e}")
+
         return indexed_count
 
     def retrieve(

@@ -3,12 +3,15 @@ from typing import List, Optional
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
 
 from backend.app.schemas.retrieval import (
+    HybridSearchResult,
     IndexChunksRequest,
     IndexChunksResponse,
+    RetrievalMode,
     VectorSearchRequest,
     VectorSearchResult,
 )
 from backend.app.services.ingestion_service import IngestionService
+from backend.app.services.retrieval.hybrid import HybridRetriever
 from backend.app.services.retrieval_service import RetrievalService
 
 router = APIRouter(prefix="/retrieval", tags=["Semantic Retrieval & Vector Search"])
@@ -16,25 +19,26 @@ router = APIRouter(prefix="/retrieval", tags=["Semantic Retrieval & Vector Searc
 
 @router.post(
     "/search",
-    response_model=List[VectorSearchResult],
+    response_model=List[HybridSearchResult],
     status_code=status.HTTP_200_OK,
-    summary="Semantic Vector Search",
-    description="Embeds query and searches nearest neighbor chunks in the vector store using cosine similarity.",
+    summary="Multi-Strategy Retrieval Search (Vector, BM25, or Hybrid)",
+    description="Retrieves nearest neighbor chunks using dense vector search, sparse BM25, or Reciprocal Rank Fusion (RRF).",
 )
-async def semantic_search(payload: VectorSearchRequest) -> List[VectorSearchResult]:
-    """Execute vector similarity search for a query."""
+async def retrieval_search(payload: VectorSearchRequest) -> List[HybridSearchResult]:
+    """Execute retrieval search under vector, bm25, or hybrid mode."""
     try:
-        service = RetrievalService()
-        results = service.retrieve(
+        retriever = HybridRetriever()
+        results = retriever.retrieve(
             query=payload.query,
             top_k=payload.top_k,
+            mode=payload.mode,
             document_ids=payload.document_ids,
         )
         return results
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Semantic retrieval failed: {str(e)}",
+            detail=f"Retrieval failed: {str(e)}",
         )
 
 

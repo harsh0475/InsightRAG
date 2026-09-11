@@ -1,8 +1,8 @@
-"""Schemas for Baseline RAG generation, citations, and query requests."""
+"""Schemas for RAG generation, citations, and query requests with hybrid retrieval support."""
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-from backend.app.schemas.retrieval import VectorSearchResult
+from backend.app.schemas.retrieval import RetrievalMode, VectorSearchResult
 
 
 class Citation(BaseModel):
@@ -20,6 +20,7 @@ class RAGQueryRequest(BaseModel):
     query: str = Field(min_length=1, description="The user question to answer")
     top_k: int = Field(default=5, gt=0, le=50, description="Number of context chunks to retrieve")
     document_ids: Optional[List[str]] = Field(default=None, description="Optional document IDs filter")
+    retrieval_mode: RetrievalMode = Field(default=RetrievalMode.HYBRID, description="Retrieval strategy: vector, bm25, or hybrid")
 
 
 class RAGResponse(BaseModel):
@@ -31,4 +32,4 @@ class RAGResponse(BaseModel):
     has_sufficient_context: bool = Field(description="False if context lacked sufficient evidence to answer")
     execution_time_ms: float = Field(description="End-to-end latency in milliseconds")
     model_name: str = Field(description="Name of the generative LLM model used")
-
+    retrieval_mode: str = Field(default="hybrid", description="Retrieval strategy executed")

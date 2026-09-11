@@ -9,8 +9,10 @@ from backend.app.schemas.document import (
 )
 from backend.app.schemas.rag import Citation, RAGQueryRequest, RAGResponse
 from backend.app.schemas.retrieval import (
+    HybridSearchResult,
     IndexChunksRequest,
     IndexChunksResponse,
+    RetrievalMode,
     VectorSearchRequest,
     VectorSearchResult,
 )
@@ -26,6 +28,8 @@ __all__ = [
     "IndexChunksResponse",
     "VectorSearchRequest",
     "VectorSearchResult",
+    "HybridSearchResult",
+    "RetrievalMode",
     "Citation",
     "RAGQueryRequest",
     "RAGResponse",
