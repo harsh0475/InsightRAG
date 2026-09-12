@@ -1,0 +1,46 @@
+{
+  "1. Vector Only": {
+    "retrieval_mode": "vector",
+    "reranker_applied": false,
+    "mean_hit_rate": 1.0,
+    "mean_recall": 0.625,
+    "mean_mrr": 0.9583,
+    "mean_faithfulness": 0.8016,
+    "mean_relevance": 0.3276,
+    "refusal_accuracy": 1.0,
+    "mean_latency_ms": 15.98
+  },
+  "2. BM25 Only": {
+    "retrieval_mode": "bm25",
+    "reranker_applied": false,
+    "mean_hit_rate": 1.0,
+    "mean_recall": 0.75,
+    "mean_mrr": 1.0,
+    "mean_faithfulness": 0.8045,
+    "mean_relevance": 0.3276,
+    "refusal_accuracy": 1.0,
+    "mean_latency_ms": 10.68
+  },
+  "3. Hybrid (RRF)": {
+    "retrieval_mode": "hybrid",
+    "reranker_applied": false,
+    "mean_hit_rate": 1.0,
+    "mean_recall": 0.75,
+    "mean_mrr": 1.0,
+    "mean_faithfulness": 0.7908,
+    "mean_relevance": 0.3276,
+    "refusal_accuracy": 1.0,
+    "mean_latency_ms": 11.59
+  },
+  "4. Two-Stage Reranked": {
+    "retrieval_mode": "hybrid",
+    "reranker_applied": true,
+    "mean_hit_rate": 1.0,
+    "mean_recall": 0.7292,
+    "mean_mrr": 1.0,
+    "mean_faithfulness": 0.7908,
+    "mean_relevance": 0.3276,
+    "refusal_accuracy": 1.0,
+    "mean_latency_ms": 10.23
+  }
+}

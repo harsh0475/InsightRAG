@@ -1,0 +1,99 @@
+[
+  {
+    "query_id": "q001",
+    "query": "What technique is recommended to prevent cache stampedes in distributed caching?",
+    "expected_document": "sample_architecture.md",
+    "expected_keywords": ["stampede", "jitter", "expiration", "xfetch"],
+    "ground_truth_answer": "Cache stampedes are prevented using jittered expiration (5% to 15% random variance) and probabilistic early recomputation via the XFetch algorithm.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q002",
+    "query": "Explain the difference between Cache-Aside and Write-Through caching patterns.",
+    "expected_document": "sample_architecture.md",
+    "expected_keywords": ["cache-aside", "write-through", "lazy", "latency"],
+    "ground_truth_answer": "Cache-Aside loads data lazily upon cache misses, whereas Write-Through writes data simultaneously to both the cache and database to maintain consistency.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q003",
+    "query": "What is the recommended Redis eviction policy when keys follow an LFU pattern?",
+    "expected_document": "sample_architecture.md",
+    "expected_keywords": ["allkeys-lfu", "eviction", "policy", "redis"],
+    "ground_truth_answer": "The recommended Redis eviction policy for least-frequently-used access patterns is allkeys-lfu or volatile-lfu.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q004",
+    "query": "How does OAuth 2.0 PKCE secure public clients against authorization code interception?",
+    "expected_document": "sample_oauth.txt",
+    "expected_keywords": ["pkce", "code_verifier", "code_challenge", "sha-256"],
+    "ground_truth_answer": "PKCE generates a cryptographic code_verifier and sends its SHA-256 code_challenge during authorization; the token endpoint verifies the verifier before exchanging the code.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q005",
+    "query": "What is the expiration window for OAuth 2.0 access tokens and how are refresh tokens handled?",
+    "expected_document": "sample_oauth.txt",
+    "expected_keywords": ["15-minute", "expiration", "refresh", "rotation"],
+    "ground_truth_answer": "Access tokens have a short 15-minute expiration window, and refresh token rotation issues a new refresh token with each exchange while invalidating the old one.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q006",
+    "query": "What parameters govern rolling updates in Kubernetes Deployments to maintain availability?",
+    "expected_document": "sample_k8s_guide.pdf",
+    "expected_keywords": ["maxsurge", "maxunavailable", "rolling", "deployment"],
+    "ground_truth_answer": "Rolling updates are governed by maxSurge (extra pods allowed above replica count) and maxUnavailable (maximum pods that can be unavailable during update).",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q007",
+    "query": "How do Pod Disruption Budgets (PDB) protect Kubernetes workloads during cluster maintenance?",
+    "expected_document": "sample_k8s_guide.pdf",
+    "expected_keywords": ["pdb", "disruption", "budget", "minavailable"],
+    "ground_truth_answer": "Pod Disruption Budgets specify minAvailable or maxUnavailable replicas that must remain running during voluntary disruptions like node drains.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q008",
+    "query": "What role do Kubernetes ReplicaSets play relative to Deployments?",
+    "expected_document": "sample_k8s_guide.pdf",
+    "expected_keywords": ["replicaset", "deployment", "declarative", "pods"],
+    "ground_truth_answer": "ReplicaSets maintain a stable set of running replica pods at any given time, while Deployments provide declarative updates and management over ReplicaSets.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q009",
+    "query": "How does Redis Sentinel achieve high availability and handle master node failover?",
+    "expected_document": "sample_architecture.md",
+    "expected_keywords": ["sentinel", "failover", "quorum", "master"],
+    "ground_truth_answer": "Redis Sentinel provides automated monitoring, notification, and failover by electing a new master when a quorum of Sentinels agree the master is unreachable.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q010",
+    "query": "Why should authorization codes in OAuth 2.0 have a one-time-use restriction?",
+    "expected_document": "sample_oauth.txt",
+    "expected_keywords": ["one-time", "replay", "authorization", "code"],
+    "ground_truth_answer": "Authorization codes must be strictly one-time-use to prevent replay attacks if a code is leaked or intercepted.",
+    "is_answerable": true
+  },
+  {
+    "query_id": "q011",
+    "query": "What is the secret recipe for traditional Italian tiramisu?",
+    "expected_document": "none",
+    "expected_keywords": [],
+    "ground_truth_answer": "I do not have sufficient information in the provided context to answer this question.",
+    "is_answerable": false
+  },
+  {
+    "query_id": "q012",
+    "query": "Explain how quantum entanglement enables quantum key distribution in cryptographic networks.",
+    "expected_document": "none",
+    "expected_keywords": [],
+    "ground_truth_answer": "I do not have sufficient information in the provided context to answer this question.",
+    "is_answerable": false
+  }
+]
+
