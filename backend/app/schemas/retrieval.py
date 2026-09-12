@@ -20,7 +20,7 @@ class VectorSearchResult(BaseModel):
     document_id: str = Field(description="Parent document identifier")
     document_name: str = Field(description="Name of the source document")
     metadata: ChunkMetadata = Field(description="Provenance metadata (page, section, position)")
-    score: float = Field(description="Similarity or relevance score")
+    score: float = Field(description="Cosine similarity score between 0.0 and 1.0 (higher = more similar)")
 
 
 class HybridSearchResult(BaseModel):
@@ -57,3 +57,4 @@ class IndexChunksResponse(BaseModel):
     document_id: str = Field(description="Parent document identifier")
     model: str = Field(description="Embedding model used")
     dimension: int = Field(description="Embedding vector dimensionality")
+

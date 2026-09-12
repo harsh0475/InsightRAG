@@ -26,6 +26,9 @@ async def query_rag(payload: RAGQueryRequest) -> RAGResponse:
             top_k=payload.top_k,
             retrieval_mode=payload.retrieval_mode,
             document_ids=payload.document_ids,
+            enable_reranking=payload.enable_reranking,
+            candidate_pool_size=payload.candidate_pool_size,
+            chat_history=payload.chat_history,
         )
         return response
     except Exception as e:

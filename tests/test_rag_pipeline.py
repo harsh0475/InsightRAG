@@ -74,3 +74,45 @@ def test_baseline_rag_refusal_on_insufficient_context():
     assert "I do not have sufficient information" in response.answer
     assert len(response.citations) == 0
 
+
+def test_rag_pipeline_with_two_stage_reranking():
+    """Verify two-stage retrieval executes reranking and tracks score shifts."""
+    pipeline = setup_test_pipeline()
+    response = pipeline.run(
+        query="What is the expiration window for OAuth access tokens?",
+        top_k=1,
+        candidate_pool_size=5,
+        enable_reranking=True,
+    )
+
+    assert response.has_sufficient_context is True
+    assert response.reranker_applied is True
+    assert response.reranker_latency_ms is not None
+    assert response.reranker_latency_ms >= 0
+    assert response.reranked_chunks is not None
+    assert len(response.reranked_chunks) == 1
+    assert response.reranked_chunks[0].chunk_id == "doc_oauth_c0001"
+    assert response.reranked_chunks[0].rerank_score > 0
+
+
+def test_rag_pipeline_conversational_query_rewriting():
+    """Verify follow-up queries with pronouns are rewritten using conversation history."""
+    from backend.app.schemas.chat import ChatMessage, ChatRole
+
+    pipeline = setup_test_pipeline()
+    history = [
+        ChatMessage(role=ChatRole.USER, content="Explain OAuth token expiration."),
+        ChatMessage(role=ChatRole.ASSISTANT, content="OAuth 2.0 access tokens expire in 15 minutes."),
+    ]
+
+    response = pipeline.run(
+        query="Does it require rotation?",
+        chat_history=history,
+        top_k=1,
+    )
+
+    assert response.rewritten_query is not None
+    assert "oauth" in response.rewritten_query.lower()
+    assert response.has_sufficient_context is True
+
+

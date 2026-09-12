@@ -2,13 +2,13 @@
 from typing import List, Optional
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
 
+from backend.app.schemas.reranker import RerankRequest, RerankResponse
 from backend.app.schemas.retrieval import (
     HybridSearchResult,
     IndexChunksRequest,
     IndexChunksResponse,
     RetrievalMode,
     VectorSearchRequest,
-    VectorSearchResult,
 )
 from backend.app.services.ingestion_service import IngestionService
 from backend.app.services.retrieval.hybrid import HybridRetriever
@@ -47,7 +47,7 @@ async def retrieval_search(payload: VectorSearchRequest) -> List[HybridSearchRes
     response_model=IndexChunksResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Index Document Chunks",
-    description="Generates dense vector embeddings for input chunks and stores them in the vector database.",
+    description="Generates dense vector embeddings for input chunks and stores them in the vector database and BM25 index.",
 )
 async def index_chunks(payload: IndexChunksRequest) -> IndexChunksResponse:
     """Index an array of DocumentChunk objects."""
@@ -119,5 +119,41 @@ async def upload_and_index_document(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Upload and index failed: {str(e)}",
+        )
+
+
+@router.post(
+    "/rerank",
+    response_model=RerankResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Rerank Candidate Chunks",
+    description="Scores candidate chunks using cross-encoder relevance modeling and outputs reordered list with rank shifts.",
+)
+async def rerank_candidates(payload: RerankRequest) -> RerankResponse:
+    """Rerank candidates using configured cross-encoder provider."""
+    import time
+    from backend.app.services.reranker import get_reranker_provider
+
+    try:
+        start_time = time.perf_counter()
+        provider = get_reranker_provider()
+        reranked = provider.rerank(
+            query=payload.query,
+            candidates=payload.candidates,
+            top_n=payload.top_n,
+        )
+        duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
+
+        return RerankResponse(
+            query=payload.query,
+            results=reranked,
+            total_candidates=len(payload.candidates),
+            model_name=provider.model_name,
+            execution_time_ms=duration_ms,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Reranking failed: {str(e)}",
         )
 
