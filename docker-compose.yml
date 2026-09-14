@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL with pgvector extension enabled
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: insightrag_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: insightrag_user
+      POSTGRES_PASSWORD: insightrag_secret_change_in_production
+      POSTGRES_DB: insightrag_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insightrag_user -d insightrag_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - insightrag_net
+
+  # InsightRAG FastAPI Backend and Static Dashboard
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: insightrag_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      LOG_LEVEL: INFO
+      API_HOST: "0.0.0.0"
+      API_PORT: 8000
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: insightrag_user
+      POSTGRES_PASSWORD: insightrag_secret_change_in_production
+      POSTGRES_DB: insightrag_db
+      DATABASE_URL: postgresql+psycopg://insightrag_user:insightrag_secret_change_in_production@postgres:5432/insightrag_db
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_API_KEY: ${LLM_API_KEY:-${OPENAI_API_KEY:-}}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-openai}
+      EMBEDDING_API_KEY: ${EMBEDDING_API_KEY:-${OPENAI_API_KEY:-}}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+      RETRIEVAL_MODE: hybrid
+      RERANKER_PROVIDER: ${RERANKER_PROVIDER:-cross-encoder}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - insightrag_net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  insightrag_net:
+    driver: bridge
+

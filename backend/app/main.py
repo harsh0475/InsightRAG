@@ -1,8 +1,12 @@
 """InsightRAG FastAPI Main Application Entrypoint."""
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from pathlib import Path
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.app.api.v1.router import api_v1_router
 from backend.app.core.config import get_settings
@@ -49,12 +53,24 @@ def create_app() -> FastAPI:
     app.include_router(api_v1_router, prefix=settings.API_V1_PREFIX)
 
     # Root welcome endpoint
+    # Mount static assets & dashboard
+    static_dir = Path(__file__).resolve().parent / "static"
+    if static_dir.exists():
+        app.mount("/app", StaticFiles(directory=str(static_dir), html=True), name="static_app")
+
+    # Root welcome / dashboard endpoint
     @app.get("/", tags=["Root"])
-    async def root():
+    async def root(request: Request):
+        accept_header = request.headers.get("accept", "")
+        index_file = static_dir / "index.html"
+        if "text/html" in accept_header and index_file.exists():
+            return FileResponse(index_file)
+
         return JSONResponse(
             content={
                 "message": f"Welcome to {settings.APP_NAME} API",
                 "version": settings.APP_VERSION,
+                "ui_url": "/app",
                 "docs_url": "/docs",
                 "health_url": f"{settings.API_V1_PREFIX}/health",
             }
